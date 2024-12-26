@@ -15,3 +15,6 @@ def build_model(num_chars, latent_dim):
     
     decoder_dense = Dense(num_chars, activation='softmax')
     decoder_outputs = decoder_dense(decoder_outputs)
+
+    model = Model([encoder_inputs, decoder_inputs], decoder_outputs)
+    return model
