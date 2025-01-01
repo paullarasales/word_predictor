@@ -7,12 +7,12 @@ import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split 
-from sklearn.ensemble import RandomForestRegressor
 
 data = pd.read_csv("small_dataset.csv")
 
 print(data)
 
+#Feature Engineering
 data["rooms_per_square_foot"] = data['bedrooms'] / data['square_feet']
 data["bathrooms_per_bedroom"] = data['bathrooms'] / data['bedrooms']
 
@@ -45,7 +45,7 @@ print(model)
 model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.001), loss="mse", metrics=["mae"])
 print(model)
 
-model.fit(X_train, y_train, epochs=20, batch_size=16)
+model.fit(X_train, y_train, epochs=100, batch_size=16)
 model.save("small_house_prediction_model.keras")
 joblib.dump(scaler, "X_small_scaler.pkl")
 joblib.dump(y_scaler, "y_small_scaler.pkl")
@@ -80,19 +80,18 @@ plt.show()
 
 # Visualize feature engineering impacts
 sns.pairplot(data[["square_feet", "bedrooms", "bathrooms", "rooms_per_square_foot", "bathrooms_per_bedroom", "price"]])
-plt.show()
-
+plt.show(block=False)
 
 plt.scatter(y_scaler.inverse_transform(y_test.reshape(-1, 1)), y_pred_rescaled)
 plt.xlabel('Actual Prices')
 plt.ylabel('Predicted Prices')
 plt.title('Residual Plot')
-plt.show()
+plt.show(block=False)
 
 sns.histplot(data['rooms_per_square_foot'], kde=True)
 plt.title('Distribution of Rooms Per Square Foot')
-plt.show()
+plt.show(block=False)
 
 sns.histplot(data['bathrooms_per_bedroom'], kde=True)
 plt.title('Distribution of Bathrooms Per Bedroom')
-plt.show()
+plt.show(block=False)
