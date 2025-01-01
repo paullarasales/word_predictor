@@ -24,3 +24,20 @@ plt.xlabel('Sepal Length')
 plt.ylabel('Frequency')
 plt.grid(True)
 plt.show()
+
+# Task three
+plt.figure(figsize=(8, 6))
+sns.scatterplot(
+    data=data,
+    x='petal_length',
+    y='petal_width',
+    hue='species',
+    palette='viridis',
+    s=100
+)
+plt.title('Petal Length vs Petal Width')
+plt.xlabel('Petal Length')
+plt.ylabel('Petal Width')
+plt.legend(title='Species')
+plt.grid(True)
+plt.show()
