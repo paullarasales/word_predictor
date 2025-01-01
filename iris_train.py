@@ -41,3 +41,15 @@ plt.ylabel('Petal Width')
 plt.legend(title='Species')
 plt.grid(True)
 plt.show()
+
+# Feature Engineering
+data['area_approximation'] = data['sepal_length'] * data['sepal_width']
+print("New Featur Added")
+print(data.head())
+
+# Min-Max Normalization
+data['petal_length_normalized'] = (data['petal_length'] - data['petal_length'].min()) / data['petal_length'].max() - data['petal_length'].min()
+print(data[['petal_length', 'petal_length_normalized']].head())
+
+
+
