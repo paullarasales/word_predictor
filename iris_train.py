@@ -4,11 +4,13 @@ import numpy as np
 import tensorflow as tf
 import seaborn as sns
 import matplotlib.pyplot as plt
-from sklearn.preprocessing import StandardScaler
+from tensorflow.keras import Sequential #type: ignore
+from tensorflow.keras.layers import Dense, Input #type: ignore
+from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.metrics import accuracy_score, classification_report
 
 data = pd.read_csv("iris_dataset.csv")
 print(data.head())
@@ -24,28 +26,11 @@ plt.title('Histogram of Sepal Length')
 plt.xlabel('Sepal Length')
 plt.ylabel('Frequency')
 plt.grid(True)
-plt.show()
-
-# Task three
-plt.figure(figsize=(8, 6))
-sns.scatterplot(
-    data=data,
-    x='petal_length',
-    y='petal_width',
-    hue='species',
-    palette='viridis',
-    s=100
-)
-plt.title('Petal Length vs Petal Width')
-plt.xlabel('Petal Length')
-plt.ylabel('Petal Width')
-plt.legend(title='Species')
-plt.grid(True)
-plt.show()
+plt.show(block=False)
 
 # Feature Engineering
 data['area_approximation'] = data['sepal_length'] * data['sepal_width']
-print("New Featur Added")
+print("New Feature Added")
 print(data.head())
 
 # Min-Max Normalization
@@ -55,15 +40,20 @@ print(data[['petal_length', 'petal_length_normalized']].head())
 X = data.drop('species', axis=1)
 y = data['species']
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+label_encoder = LabelEncoder()
+y_encoded = label_encoder.fit_transform(y)
+print("Encoded species", y_encoded)
 
+X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=0.2, random_state=42)
+print("shape 1", X_train.shape[1])
 print("Training set size:", X_train.shape)
-print("Test set size:", X_test.shape)
+print("Test size set:", X_test.shape)
 
-model = LogisticRegression(max_iter=200)
-model.fit(X_train, y_train)
+model = tf.keras.Sequential([
+    Input(shape=(X_train.shape[1],)),
+    tf.keras.layers.Dense(64, activation='relu'),
+    tf.keras.layers.Dense(64, activation='relu'),
+    tf.keras.layers.Dense(3, activation='softmax')
+])
 
-print("Model training complete.")
-
-y_pred = model.predict(X_test)
-print("Predictions on test set:", y_pred)
+model.summary()
