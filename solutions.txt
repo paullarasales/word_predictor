@@ -1,0 +1,5 @@
+# Min-Max Normalization
+df['petal_length_normalized'] = (df['petal_length'] - df['petal_length'].min()) / (df['petal_length'].max() - df['petal_length'].min())
+
+print("Normalized Petal Length:")
+print(df[['petal_length', 'petal_length_normalized']].head())

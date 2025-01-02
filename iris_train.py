@@ -5,9 +5,10 @@ import tensorflow as tf
 import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
 data = pd.read_csv("iris_dataset.csv")
 print(data.head())
@@ -51,5 +52,18 @@ print(data.head())
 data['petal_length_normalized'] = (data['petal_length'] - data['petal_length'].min()) / data['petal_length'].max() - data['petal_length'].min()
 print(data[['petal_length', 'petal_length_normalized']].head())
 
+X = data.drop('species', axis=1)
+y = data['species']
 
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
+print("Training set size:", X_train.shape)
+print("Test set size:", X_test.shape)
+
+model = LogisticRegression(max_iter=200)
+model.fit(X_train, y_train)
+
+print("Model training complete.")
+
+y_pred = model.predict(X_test)
+print("Predictions on test set:", y_pred)
