@@ -11,6 +11,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import accuracy_score, classification_report
+from tensorflow.keras.utils import to_categorical #type: ignore
 
 data = pd.read_csv("iris_dataset.csv")
 print(data.head())
@@ -31,7 +32,7 @@ plt.show(block=False)
 # Feature Engineering
 data['area_approximation'] = data['sepal_length'] * data['sepal_width']
 print("New Feature Added")
-print(data.head())
+print(data.head())  
 
 # Min-Max Normalization
 data['petal_length_normalized'] = (data['petal_length'] - data['petal_length'].min()) / data['petal_length'].max() - data['petal_length'].min()
@@ -49,6 +50,12 @@ print("shape 1", X_train.shape[1])
 print("Training set size:", X_train.shape)
 print("Test size set:", X_test.shape)
 
+y_train = to_categorical(y_train)
+y_test = to_categorical(y_test)
+
+print(y_train)
+print(y_test)
+
 model = tf.keras.Sequential([
     Input(shape=(X_train.shape[1],)),
     tf.keras.layers.Dense(64, activation='relu'),
@@ -57,3 +64,13 @@ model = tf.keras.Sequential([
 ])
 
 model.summary()
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+history = model.fit(X_train, y_train, epochs=50, validation_split=0.2)
+
+plt.plot(history.history['accuracy'], label='Train Accuracy')
+plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+plt.title('Model Accuracy')
+plt.xlabel('Epochs')
+plt.ylabel('Accuracy')
+plt.legend(loc='best')
+plt.show(block=False)
